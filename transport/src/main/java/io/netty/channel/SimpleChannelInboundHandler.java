@@ -108,6 +108,7 @@ public abstract class SimpleChannelInboundHandler<I> extends ChannelInboundHandl
                 ctx.fireChannelRead(msg);
             }
         } finally {
+            // 接收到数据后 会自动release掉数据占用的Bytebuffer资源
             if (autoRelease && release) {
                 ReferenceCountUtil.release(msg);
             }

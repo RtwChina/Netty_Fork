@@ -45,7 +45,10 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
 
     private final Channel parent;
     private final ChannelId id;
+    // NioSocketChannel的内部类：NioSocketChannelUnsafe(继承自NioByteUnsafe内部类)，对javaChannel的主要操作都封装在NioByteUnsafe中。
     private final Unsafe unsafe;
+
+    // Netty管道，在初始化newChannelPipeline()的时候，也会把本身channel传进去。
     private final DefaultChannelPipeline pipeline;
     private final VoidChannelPromise unsafeVoidPromise = new VoidChannelPromise(this, false);
     private final CloseFuture closeFuture = new CloseFuture(this);

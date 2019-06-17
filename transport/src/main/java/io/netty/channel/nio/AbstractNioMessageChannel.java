@@ -57,8 +57,10 @@ public abstract class AbstractNioMessageChannel extends AbstractNioChannel {
 
     private final class NioMessageUnsafe extends AbstractNioUnsafe {
 
+        //存放着客户单的channel。如果有SelectionKey.OP_READ | SelectionKey.OP_ACCEPT都会调用，但是因为该类是Server类，因此一般只有新建channel事件
         private final List<Object> readBuf = new ArrayList<Object>();
 
+        // 一般情况下只有 server发现有新的channel连接到的时候才会执行改代码。
         @Override
         public void read() {
             assert eventLoop().inEventLoop();
@@ -72,6 +74,7 @@ public abstract class AbstractNioMessageChannel extends AbstractNioChannel {
             try {
                 try {
                     do {
+                        // 创建NioSocketChannel.由于是ServerSocket，只负责accept，如果有IO事件说明就是有新的客户端连接，所以这里就是创建NioSocketChannel
                         int localRead = doReadMessages(readBuf);
                         if (localRead == 0) {
                             break;
@@ -90,6 +93,7 @@ public abstract class AbstractNioMessageChannel extends AbstractNioChannel {
                 int size = readBuf.size();
                 for (int i = 0; i < size; i ++) {
                     readPending = false;
+                    // 传递读事件
                     pipeline.fireChannelRead(readBuf.get(i));
                 }
                 readBuf.clear();

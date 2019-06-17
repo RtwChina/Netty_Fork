@@ -75,6 +75,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     // Workaround for JDK NIO bug.
     //
     // See:
+    // See:
     // - http://bugs.sun.com/view_bug.do?bug_id=6427854
     // - https://github.com/netty/netty/issues/203
     static {
@@ -109,6 +110,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
 
     /**
      * The NIO {@link Selector}.
+     * 跟随系统的默认值
      */
     private Selector selector;
     private Selector unwrappedSelector;
@@ -679,6 +681,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
             // Also check for readOps of 0 to workaround possible JDK bug which may otherwise lead
             // to a spin loop
             if ((readyOps & (SelectionKey.OP_READ | SelectionKey.OP_ACCEPT)) != 0 || readyOps == 0) {
+                // boss unsafe:AbstractNioByteChannel; work: unsafe:AbstractNioMessageChannel
                 unsafe.read();
             }
         } catch (CancelledKeyException ignored) {

@@ -50,7 +50,9 @@ public abstract class AbstractNioChannel extends AbstractChannel {
     private static final InternalLogger logger =
             InternalLoggerFactory.getInstance(AbstractNioChannel.class);
 
+    // javaChannel 存放的是系统默认的SocketChannelImpl(不同系统实现是不一样的哦)。也就是java.nio下默认的SocketChannel对象
     private final SelectableChannel ch;
+    // 客户端是OP_READ，服务端是OP_ACCEPT。
     protected final int readInterestOp;
     volatile SelectionKey selectionKey;
     boolean readPending;
