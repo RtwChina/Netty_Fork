@@ -144,9 +144,11 @@ public abstract class AbstractNioByteChannel extends AbstractNioChannel {
             ByteBuf byteBuf = null;
             boolean close = false;
             try {
+                // 可以看到是一个循环读取，那么有可能一个完整的请求分为两次读取即两次fireChannelRead，因此我们的解码需要进行沾包、解包的处理。
                 do {
                     // 通过Netty的按需分配ByteBufAllocator 接口进行ByteBuf的分配
                     byteBuf = allocHandle.allocate(allocator);
+                    // 读取socketChannel数据到分配的byteBuf
                     allocHandle.lastBytesRead(doReadBytes(byteBuf));
                     if (allocHandle.lastBytesRead() <= 0) {
                         // nothing was read. release the buffer.
